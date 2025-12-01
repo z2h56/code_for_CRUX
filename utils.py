@@ -56,6 +56,13 @@ def get_pred_label(s):
         return 1
     return 0
 
+def get_pred_label_s(s):
+    if 'yes' in s or 'Yes' in s or 'YES' in s:
+        return 1
+    if 'no' in s or 'No' in s or 'NO' in s:
+        return 0
+    return None
+    
 def get_pred_label_stream(comp,model_name = 'qwen2.5:14b'):
     a = ''
     if 'gpt' in model_name or 'gemini' in model_name or 'claude' in model_name:
@@ -63,13 +70,13 @@ def get_pred_label_stream(comp,model_name = 'qwen2.5:14b'):
             tmp = word.choices[0].delta
             if tmp!={}:
                 a += tmp.content
-                t = get_pred_label(a)
+                t = get_pred_label_s(a)
                 if t!=None:
                     return t
     else:
         for word in comp:
             a += word.message.content
-            t = get_pred_label(a)
+            t = get_pred_label_s(a)
             if t!=None:
                 return t
     #print(i,a)
@@ -337,5 +344,6 @@ def get_balanced_active_training_set(l, model, budget=500):
         res.extend(chosen1[i])
 
     return res
+
 
 
